@@ -86,8 +86,8 @@ app.post("/login/", async (request, response) => {
 
 app.get("/states/", authenticateToken, async (request, response) => {
   const getStates = `SELECT * FROM state;`;
-  const states = await db.all(getState);
-  response.send(statesArr.map((each) => convertStateDbToResponse(each)));
+  const states = await db.all(getStates);
+  response.send(states.map((each) => convertStateDbToResponse(each)));
 });
 app.get("/states/:stateId/", authenticateToken, async (request, response) => {
   const { stateId } = request.params;
@@ -102,7 +102,7 @@ app.get(
     const { districtId } = request.params;
     const getDistrict = `SELECT * FROM district WHERE district_id=${districtId};`;
     const district = await db.get(getDistrict);
-    response.send(convertStateDbToResponse(district));
+    response.send(convertDistrictDbToResponse(district));
   }
 );
 app.post("/districts/", authenticateToken, async (request, response) => {
@@ -110,7 +110,7 @@ app.post("/districts/", authenticateToken, async (request, response) => {
   const postDistrict = `INSERT INTO district (stateId,districtName,cases,cured,active,deaths)
         VALUES (${stateId},'${districtName}',${cases},${cured},${active},${deaths});`;
   await db.run(postDistrict);
-  response.send("District Successfully Addd");
+  response.send("District Successfully Added");
 });
 app.delete(
   "/districts/:districtId/",
@@ -128,8 +128,8 @@ app.put(
   async (request, response) => {
     const { districtId } = request.params;
     const {
-      stateId,
       districtName,
+      stateId,
       cases,
       cured,
       active,
